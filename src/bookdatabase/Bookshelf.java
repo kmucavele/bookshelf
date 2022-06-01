@@ -28,7 +28,7 @@ public class Bookshelf {
         }
     }
 
-    // Create Ops
+    // CREATE
     public void addToBookshelf(Book book) throws SQLException {
         if(checkIfInShelf("books_owned", book)){
             System.out.printf("'%s' by '%s' already exists in this Bookshelf."
@@ -47,7 +47,7 @@ public class Bookshelf {
         dbConnection.addBook(book, "books_wishlist");
     }
 
-    //Read Ops
+    //READ
 
     public void getAllBooks(String bookshelfTableName) throws SQLException{
         List<Book> books = dbConnection.getBooks(bookshelfTableName);
@@ -65,9 +65,11 @@ public class Bookshelf {
     }
 
     private boolean checkIfInShelf(String bookshelfTableName, Book book) throws SQLException{
-            return dbConnection.searchBook(bookshelfTableName, book);
+        return dbConnection.searchBook(bookshelfTableName, book).next();
     }
 
-
-
+// UPDATE
+    public void updateReadingStatus(String bookshelfTableName, Book book) throws SQLException {
+        dbConnection.updateDoneReading(bookshelfTableName, book);
+    }
 }

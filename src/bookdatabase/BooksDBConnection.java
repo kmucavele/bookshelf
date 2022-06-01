@@ -1,6 +1,5 @@
 package bookdatabase;
 
-
 import objects.Book;
 
 import java.sql.*;
@@ -37,8 +36,8 @@ public class BooksDBConnection {
 
 
 //CRUD
-    // INSERT
 
+// INSERT
     /**
      * Add book to a bookshelf.
      * @param book Book object.
@@ -77,13 +76,14 @@ public class BooksDBConnection {
                 book.getAuthor(), bookshelf);
     }
 
+// SELECT
     /**
      * Selects all books from a given bookshelf.
      * @param bookshelf Bookshelf table name in db.
      * @return ArrayList of all Book objects given bookshelf.
      * @throws SQLException
      */
-    // SELECT
+
     protected List<Book> getBooks(String bookshelf) throws SQLException {
         PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf);
         ResultSet bookQueryResult = selectBooks.executeQuery();
@@ -127,11 +127,11 @@ public class BooksDBConnection {
      * @return True if rows where returned from query, else false.
      * @throws SQLException
      */
-    protected boolean searchBook(String bookshelf, Book book) throws SQLException {
+    protected ResultSet searchBook(String bookshelf, Book book) throws SQLException {
         PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf +
                 " WHERE title LIKE '%" + book.getTitle() + "%' AND author LIKE '%" + book.getAuthor() + "%'");
 
-        return selectBooks.executeQuery().next();
+        return selectBooks.executeQuery();
     }
 
     /**
@@ -149,5 +149,19 @@ public class BooksDBConnection {
         ResultSet searchResults = selectBooks.executeQuery();
         createBooks(searchResults, bookshelf);
         return queriedBooks;
+    }
+
+//UPDATE
+
+    protected void updateDoneReading(String bookshelf, Book book) throws SQLException{
+        ResultSet resultID = searchBook(bookshelf, book);
+
+        while (resultID.next()){
+            int id = resultID.getInt("id");
+
+            PreparedStatement updateDone = connection.prepareStatement("UPDATE " + bookshelf +
+                    " SET done_reading = NOT done_reading WHERE id = " + id);
+            updateDone.executeUpdate();
+        }
     }
 }
