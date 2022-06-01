@@ -33,6 +33,7 @@ public class Bookshelf {
         if(checkIfInShelf("books_owned", book)){
             System.out.printf("'%s' by '%s' already exists in this Bookshelf."
                     , book.getTitle(), book.getAuthor());
+            return;
         }
         dbConnection.addBook(book, "books_owned");
     }
@@ -41,6 +42,7 @@ public class Bookshelf {
         if(checkIfInShelf("books_wishlist", book)){
             System.out.printf("'%s' by '%s' was already added to the book wishlist."
                     , book.getTitle(), book.getAuthor());
+            return;
         }
         dbConnection.addBook(book, "books_wishlist");
     }
@@ -55,6 +57,7 @@ public class Bookshelf {
     public void searchBook(String bookshelfTableName, String title, String author) throws SQLException{
         if(!(title.equals("") && author.equals(""))){
             showBookList(dbConnection.searchBook(bookshelfTableName, title, author));
+            return;
         }
 
         System.out.println("No Results for title = '" + title  + "', author = '" + author + "'"
