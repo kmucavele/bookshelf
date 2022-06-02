@@ -1,30 +1,29 @@
 package bookdatabase;
 
-import objects.Book;
+import objects.*;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class BooksDBConnection {
-    final private List<Book> queriedBooks = new ArrayList<>();
-    private Connection connection = getConnection();
-
-    // create class obj
+    // instance
     private static BooksDBConnection instance = null;
+    final private ArrayList<Book> queriedBooks = new ArrayList<>();    private Connection connection = getConnection();
 
     // make constructor inaccessible
     private BooksDBConnection() throws SQLException {
     }
 
-    public static BooksDBConnection getInstance() throws SQLException {
+    // Single db class access
+    protected static BooksDBConnection getInstance() throws SQLException {
         if (instance == null) {
             instance = new BooksDBConnection();
         }
         return instance;
     }
 
-    public Connection getConnection() throws SQLException {
+    // jdbc connection
+    protected Connection getConnection() throws SQLException {
         connection = DriverManager
                 .getConnection("jdbc:mysql://localhost:3306/books",
                         "root", "dataBahn28#");
@@ -34,18 +33,15 @@ public class BooksDBConnection {
         return connection;
     }
 
-
-//CRUD
-
-// INSERT
     /**
      * Add book to a bookshelf.
-     * @param book Book object.
+     *
+     * @param book      Book object.
      * @param bookshelf Bookshelf the book should be added to (db table name).
-     * @throws SQLException
+     * @throws SQLException throws SQLException
      */
-    public void addBook(Book book, String bookshelf) throws SQLException {
-        String insertOwnedBook = "INSERT INTO " + bookshelf + " (title, author, date_of_publication, publisher, genre" +
+    protected void addBook(Book book, BookshelfTable bookshelf) throws SQLException {
+        String insertOwnedBook = "INSERT INTO " + bookshelf.getTableName() + " (title, author, date_of_publication, publisher, genre" +
                 ", done_reading)" +
                 " VALUES(?,?,?,?,?,?)";
 
@@ -53,7 +49,7 @@ public class BooksDBConnection {
 
         PreparedStatement insertBook;
 
-        if (bookshelf.equals("books_owned")) {
+        if (bookshelf == BookshelfTable.OWNED) {
             insertBook = connection.prepareStatement(insertOwnedBook);
 
             insertBook.setString(1, book.getTitle());
@@ -76,29 +72,39 @@ public class BooksDBConnection {
                 book.getAuthor(), bookshelf);
     }
 
-// SELECT
     /**
      * Selects all books from a given bookshelf.
+     *
      * @param bookshelf Bookshelf table name in db.
      * @return ArrayList of all Book objects given bookshelf.
-     * @throws SQLException
+     * @throws SQLException throws SQLException
      */
 
-    protected List<Book> getBooks(String bookshelf) throws SQLException {
-        PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf);
+    protected ArrayList<Book> getBooks(BookshelfTable bookshelf) throws SQLException {
+        PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf.getTableName());
         ResultSet bookQueryResult = selectBooks.executeQuery();
-        createBooks(bookQueryResult, bookshelf);
+        createBooksFromQuery(bookQueryResult, bookshelf);
         return queriedBooks;
+    }
+
+
+//CRUD
+
+// INSERT
+
+    protected void moveBookFromWishlist(Book book) throws SQLException {
+        searchBook(BookshelfTable.WISHLIST, book);
     }
 
     /**
      * Creates a book object based on a result ser (rows queried from database).
+     *
      * @param resultSet Result rows from database.
      * @param bookshelf Bookshelf table name in db.
-     * @throws SQLException
+     * @throws SQLException throws SQLException
      */
-    private void createBooks(ResultSet resultSet, String bookshelf) throws SQLException {
-        if (bookshelf.equals("books_owned")) {
+    private void createBooksFromQuery(ResultSet resultSet, BookshelfTable bookshelf) throws SQLException {
+        if (bookshelf == BookshelfTable.OWNED) {
             while (resultSet.next()) {
                 String title = resultSet.getString("title");
                 String author = resultSet.getString("author");
@@ -120,15 +126,18 @@ public class BooksDBConnection {
         }
     }
 
+// SELECT
+
     /**
      * Looks up a book. Only checks its existence!
+     *
      * @param bookshelf Bookshelf table name in db.
-     * @param book Book object.
-     * @return True if rows where returned from query, else false.
-     * @throws SQLException
+     * @param book      Book object.
+     * @return ResultSet from search query.
+     * @throws SQLException throws SQLException
      */
-    protected ResultSet searchBook(String bookshelf, Book book) throws SQLException {
-        PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf +
+    protected ResultSet searchBook(BookshelfTable bookshelf, Book book) throws SQLException {
+        PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf.getTableName() +
                 " WHERE title LIKE '%" + book.getTitle() + "%' AND author LIKE '%" + book.getAuthor() + "%'");
 
         return selectBooks.executeQuery();
@@ -136,32 +145,55 @@ public class BooksDBConnection {
 
     /**
      * Looks up a book and returns search results.
+     *
      * @param bookshelf Bookshelf table name in db.
-     * @param title Book title.
-     * @param author Book Author.
+     * @param title     Book title.
+     * @param author    Book Author.
      * @return ArrayList of all matching Books.
-     * @throws SQLException
+     * @throws SQLException throws SQLException
      */
-    protected List<Book> searchBook(String bookshelf, String title, String author) throws SQLException {
-        PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf +
+    protected ArrayList<Book> freeBookSearch(BookshelfTable bookshelf, String title, String author) throws SQLException {
+        PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf.getTableName() +
                 " WHERE title LIKE '%" + title + "%' OR author LIKE '%" + author + "%'");
 
         ResultSet searchResults = selectBooks.executeQuery();
-        createBooks(searchResults, bookshelf);
+        createBooksFromQuery(searchResults, bookshelf);
         return queriedBooks;
+    }
+
+    protected void updateDoneReading(BookshelfTable bookshelf, Book book) throws SQLException {
+        ResultSet queryResult = searchBook(bookshelf, book);
+
+        while (queryResult.next()) {
+            int id = queryResult.getInt("id");
+            boolean readStatus = queryResult.getBoolean("done_reading");
+
+            PreparedStatement updateDone = connection.prepareStatement("UPDATE " + bookshelf.getTableName() +
+                    " SET done_reading = NOT done_reading WHERE id = " + id);
+            updateDone.executeUpdate();
+            System.out.printf("Reading status for '%s' by '%s' was updated to %s.%n", book.getTitle(), book.getAuthor()
+                    , readStatus ? "'Done'" : "'Not done'");
+        }
     }
 
 //UPDATE
 
-    protected void updateDoneReading(String bookshelf, Book book) throws SQLException{
-        ResultSet resultID = searchBook(bookshelf, book);
+    // DELETE
+    protected void deleteBook(BookshelfTable bookshelf, Book book) throws SQLException {
+        ResultSet queryResult = searchBook(bookshelf, book);
 
-        while (resultID.next()){
-            int id = resultID.getInt("id");
+        while (queryResult.next()) {
+            int id = queryResult.getInt("id");
 
-            PreparedStatement updateDone = connection.prepareStatement("UPDATE " + bookshelf +
-                    " SET done_reading = NOT done_reading WHERE id = " + id);
-            updateDone.executeUpdate();
+            PreparedStatement deleteQuery = connection.prepareStatement("DELETE FROM " + bookshelf.getTableName() +
+                    " WHERE id = ? LIMIT 1");
+            deleteQuery.setInt(1, id);
+            deleteQuery.executeUpdate();
+            System.out.printf("'%s' by '%s' was deleted from '%s' bookshelf.%n", book.getTitle(),
+                    book.getAuthor()
+                    , bookshelf.getTableName());
         }
     }
+
+
 }

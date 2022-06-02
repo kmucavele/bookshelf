@@ -61,7 +61,7 @@ public class Book {
                 "\tAuthor = '" + author + "'\n" +
                 "\tGenre = '" + genre + "'\n" +
                 "\tPublisher = '" + publisher + "'\n" +
-                "\tDate of publication = '" + dateOfPublication + "'\n"+
+                "\tDate of publication = '" + dateOfPublication + "'\n" +
                 "\tDoneReading = '" + (doneReading ? "Yes" : "No") + "'\n\n";
     }
 
