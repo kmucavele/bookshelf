@@ -6,7 +6,6 @@ public class Book {
     final private String title, author, genre;
     private String publisher;
     private Date dateOfPublication;
-
     private boolean doneReading;
 
     // normal Book constructor
@@ -58,21 +57,16 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book{" +
-                "Title='" + title + '\'' +
-                ", Author='" + author + '\'' +
-                ", Genre='" + genre + '\'' +
-                ", Publisher='" + publisher + '\'' +
-                ", Date of publication=" + dateOfPublication +
-                ", DoneReading=" + doneReading +
-                '}';
+        return "\tTitle = '" + title + "'\n" +
+                "\tAuthor = '" + author + "'\n" +
+                "\tGenre = '" + genre + "'\n" +
+                "\tPublisher = '" + publisher + "'\n" +
+                "\tDate of publication = '" + dateOfPublication + "'\n"+
+                "\tDoneReading = '" + (doneReading ? "Yes" : "No") + "'\n\n";
     }
 
-    public void setDoneReading(boolean doneReading){
-        this.doneReading = doneReading;
-    }
-
-    public boolean getDoneReading(){
+    public boolean getDoneReading() {
         return doneReading;
     }
+
 }
