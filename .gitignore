@@ -1,4 +1,4 @@
 .idea
 package-lock.json
 bookshelf.iml
-out
+target
