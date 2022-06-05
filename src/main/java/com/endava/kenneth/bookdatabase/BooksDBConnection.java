@@ -1,17 +1,27 @@
-package bookdatabase;
+package com.endava.kenneth.bookdatabase;
 
-import objects.*;
+import com.endava.kenneth.objects.Book;
+import com.endava.util.BookshelfTable;
+import com.zaxxer.hikari.HikariDataSource;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 
 public class BooksDBConnection {
-    // instance
+    //protected modifier maybe not needed?
     private static BooksDBConnection instance = null;
-    final private ArrayList<Book> queriedBooks = new ArrayList<>();    private Connection connection = getConnection();
+    final private ArrayList<Book> queriedBooks = new ArrayList<>();
+
+    // Hikari Datasource DB connection
+    final private Connection connection = createDataSource().getConnection();
 
     // make constructor inaccessible
     private BooksDBConnection() throws SQLException {
+    }
+
+    protected boolean checkDBConnection() throws SQLException{
+        return connection.isValid(0);
     }
 
     // Single db class access
@@ -22,24 +32,15 @@ public class BooksDBConnection {
         return instance;
     }
 
-    // jdbc connection
-    protected Connection getConnection() throws SQLException {
-        connection = DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/books",
-                        "root", "dataBahn28#");
-
-        //test connection
-        //System.out.println("1 - Connection is " + connection.isValid(0));
-        return connection;
+    private static DataSource createDataSource(){
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/books");
+        dataSource.setUsername("root");
+        dataSource.setPassword("dataBahn28#");
+        return dataSource;
     }
 
-    /**
-     * Add book to a bookshelf.
-     *
-     * @param book      Book object.
-     * @param bookshelf Bookshelf the book should be added to (db table name).
-     * @throws SQLException throws SQLException
-     */
+    // Add book to a bookshelf.
     protected void addBook(Book book, BookshelfTable bookshelf) throws SQLException {
         String insertOwnedBook = "INSERT INTO " + bookshelf.getTableName() + " (title, author, date_of_publication, publisher, genre" +
                 ", done_reading)" +
@@ -72,14 +73,7 @@ public class BooksDBConnection {
                 book.getAuthor(), bookshelf);
     }
 
-    /**
-     * Selects all books from a given bookshelf.
-     *
-     * @param bookshelf Bookshelf table name in db.
-     * @return ArrayList of all Book objects given bookshelf.
-     * @throws SQLException throws SQLException
-     */
-
+    // Selects all books from a given bookshelf.
     protected ArrayList<Book> getBooks(BookshelfTable bookshelf) throws SQLException {
         PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf.getTableName());
         ResultSet bookQueryResult = selectBooks.executeQuery();
@@ -92,17 +86,7 @@ public class BooksDBConnection {
 
 // INSERT
 
-    protected void moveBookFromWishlist(Book book) throws SQLException {
-        searchBook(BookshelfTable.WISHLIST, book);
-    }
-
-    /**
-     * Creates a book object based on a result ser (rows queried from database).
-     *
-     * @param resultSet Result rows from database.
-     * @param bookshelf Bookshelf table name in db.
-     * @throws SQLException throws SQLException
-     */
+    // Creates a book object based on a result ser (rows queried from database).
     private void createBooksFromQuery(ResultSet resultSet, BookshelfTable bookshelf) throws SQLException {
         if (bookshelf == BookshelfTable.OWNED) {
             while (resultSet.next()) {
@@ -128,14 +112,7 @@ public class BooksDBConnection {
 
 // SELECT
 
-    /**
-     * Looks up a book. Only checks its existence!
-     *
-     * @param bookshelf Bookshelf table name in db.
-     * @param book      Book object.
-     * @return ResultSet from search query.
-     * @throws SQLException throws SQLException
-     */
+    // selects a book from the DB, returns a ResultSet!
     protected ResultSet searchBook(BookshelfTable bookshelf, Book book) throws SQLException {
         PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf.getTableName() +
                 " WHERE title LIKE '%" + book.getTitle() + "%' AND author LIKE '%" + book.getAuthor() + "%'");
@@ -143,15 +120,7 @@ public class BooksDBConnection {
         return selectBooks.executeQuery();
     }
 
-    /**
-     * Looks up a book and returns search results.
-     *
-     * @param bookshelf Bookshelf table name in db.
-     * @param title     Book title.
-     * @param author    Book Author.
-     * @return ArrayList of all matching Books.
-     * @throws SQLException throws SQLException
-     */
+    // Looks up a book and returns search results.
     protected ArrayList<Book> freeBookSearch(BookshelfTable bookshelf, String title, String author) throws SQLException {
         PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf.getTableName() +
                 " WHERE title LIKE '%" + title + "%' OR author LIKE '%" + author + "%'");
@@ -161,6 +130,7 @@ public class BooksDBConnection {
         return queriedBooks;
     }
 
+//UPDATE
     protected void updateDoneReading(BookshelfTable bookshelf, Book book) throws SQLException {
         ResultSet queryResult = searchBook(bookshelf, book);
 
@@ -176,9 +146,7 @@ public class BooksDBConnection {
         }
     }
 
-//UPDATE
-
-    // DELETE
+// DELETE
     protected void deleteBook(BookshelfTable bookshelf, Book book) throws SQLException {
         ResultSet queryResult = searchBook(bookshelf, book);
 
@@ -194,6 +162,4 @@ public class BooksDBConnection {
                     , bookshelf.getTableName());
         }
     }
-
-
 }
