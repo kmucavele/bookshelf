@@ -6,7 +6,7 @@
 
 * The purpose of this project was to get familiar with:
   * JDBC 
-  * Data
+  * Databases in Java
   * JDBC connection pools (HikariCP was used for this project)
 
 
