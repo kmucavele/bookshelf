@@ -1,4 +1,4 @@
-package objects;
+package com.endava.kenneth.objects;
 
 import java.sql.Date;
 

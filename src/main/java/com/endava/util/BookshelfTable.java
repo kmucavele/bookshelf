@@ -1,4 +1,4 @@
-package objects;
+package com.endava.util;
 
 public enum BookshelfTable {
     OWNED("books_owned"),
