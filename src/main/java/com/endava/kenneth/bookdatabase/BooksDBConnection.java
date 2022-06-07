@@ -142,7 +142,7 @@ public class BooksDBConnection {
                     " SET done_reading = NOT done_reading WHERE id = " + id);
             updateDone.executeUpdate();
             System.out.printf("Reading status for '%s' by '%s' was updated to %s.%n", book.getTitle(), book.getAuthor()
-                    , readStatus ? "'Done'" : "'Not done'");
+                    , !readStatus ? "'Done'" : "'Not done'");
         }
     }
 
