@@ -13,16 +13,17 @@ public class Book {
                 boolean doneReading) {
         this.title = title;
         this.author = author;
-        this.dateOfPublication = Date.valueOf(dateOfPublication);
+        this.dateOfPublication = setDateOfPublication(dateOfPublication);
         this.publisher = publisher;
         this.genre = genre;
         this.doneReading = doneReading;
     }
 
+    // Constructor without done doneReading
     public Book(String title, String author, String dateOfPublication, String publisher, String genre) {
         this.title = title;
         this.author = author;
-        this.dateOfPublication = Date.valueOf(dateOfPublication);
+        this.dateOfPublication = setDateOfPublication(dateOfPublication);
         this.publisher = publisher;
         this.genre = genre;
     }
@@ -54,6 +55,9 @@ public class Book {
         return dateOfPublication;
     }
 
+    private Date setDateOfPublication(String dateOfPublication){
+        return dateOfPublication != null ? Date.valueOf(dateOfPublication) : null;
+    }
 
     @Override
     public String toString() {
