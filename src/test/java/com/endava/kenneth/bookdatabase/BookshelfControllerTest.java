@@ -1,7 +1,8 @@
 package com.endava.kenneth.bookdatabase;
 
-import com.endava.kenneth.objects.Book;
-import com.endava.util.BookshelfTable;
+import bookdatabase.BookshelfController;
+import objects.Book;
+import util.BookshelfTable;
 
 import java.sql.SQLException;
 
@@ -9,8 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BookshelfDatabaseTest {
-    public BookshelfDatabaseTest() throws SQLException {
+public class BookshelfControllerTest {
+    public BookshelfControllerTest() throws SQLException {
     }
 
     // Test Books
