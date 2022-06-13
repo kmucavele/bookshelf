@@ -1,7 +1,7 @@
-package com.endava.kenneth.bookdatabase;
+package bookdatabase;
 
-import com.endava.kenneth.objects.Book;
-import com.endava.util.BookshelfTable;
+import objects.Book;
+import util.BookshelfTable;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;

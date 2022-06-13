@@ -1,8 +1,6 @@
-package com.endava.kenneth;
-
-import com.endava.kenneth.objects.Book;
-import com.endava.kenneth.bookdatabase.BookshelfController;
-import com.endava.util.BookshelfTable;
+import objects.Book;
+import bookdatabase.BookshelfController;
+import util.BookshelfTable;
 
 import java.sql.SQLException;
 
@@ -38,6 +36,6 @@ public class Main {
                 "Knaur Taschenbuch", "Psychothriller");
 
 
-        ikeaBookshelf.getAllBooks(owned);
+        ikeaBookshelf.showBookList(ikeaBookshelf.getAllBooks(owned));
     }
 }
