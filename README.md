@@ -1,21 +1,20 @@
- # Small Bookshelf Project
-
- ---
+ # Small Digital Bookshelf Project
 
 ### Digital Books Database App (written in Java and MySQL)
 
 * The purpose of this project was to get familiar with:
-  * JDBC 
-  * Databases in Java
-  * JDBC connection pools (HikariCP was used for this project)
+  * JDBC
+  * Connecting to a databases in Java
+  * JDBC connection pools
+  * Writing tests with JUnit
 
-
-  * and to exercise:
-    * Writing Java 
-    * MySQL
-    * Writing test with JUnit 
----
-### Description
+### Functionalities
 * Users can create a book based on a Book class
-* "CRUD" them from/to the 2 main Bookshelf's (owned book & book wishlist)
+* Users can "CRUD" them from/to the 2 main Bookshelf's (_owned book_ & _book wishlist_)
 * Show Books that were queried (Queried Result is put into an ArrayList)
+
+### Technologies
+* Java
+* MySQL
+* HikariCP (for connection pools)
+* JUnit 5
