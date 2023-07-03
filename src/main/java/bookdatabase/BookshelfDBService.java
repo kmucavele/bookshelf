@@ -1,21 +1,21 @@
 package bookdatabase;
 
-import objects.Book;
-import util.BookshelfTable;
+import model.Book;
+import reading_status_enums.BookshelfReadingStatusTable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class BookshelfController {
+public class BookshelfDBService {
 
     // Bookshelf tables
-    final private BookshelfTable BOOKS_OWNED = BookshelfTable.OWNED;
-    final private BookshelfTable BOOKS_WISHLIST = BookshelfTable.WISHLIST;
+    final private BookshelfReadingStatusTable BOOKS_OWNED = BookshelfReadingStatusTable.OWNED;
+    final private BookshelfReadingStatusTable BOOKS_WISHLIST = BookshelfReadingStatusTable.WISHLIST;
 
     // Database connection
     final private BooksDBConnection dbConnection = BooksDBConnection.getInstance();
 
-    public BookshelfController() throws SQLException {
+    public BookshelfDBService() throws SQLException {
     }
 
     public boolean showConnectionStatus() throws SQLException {
@@ -64,25 +64,25 @@ public class BookshelfController {
 
     //READ
 
-    public ArrayList<Book> getAllBooks(BookshelfTable bookshelfTableName) throws SQLException {
-         return dbConnection.getBooks(bookshelfTableName);
+    public ArrayList<Book> getAllBooks(BookshelfReadingStatusTable bookshelfReadingStatusTableName) throws SQLException {
+         return dbConnection.getBooks(bookshelfReadingStatusTableName);
     }
 
-    public ArrayList<Book>  freeBookSearch(BookshelfTable bookshelfTableName, String title, String author) throws SQLException {
+    public ArrayList<Book>  freeBookSearch(BookshelfReadingStatusTable bookshelfReadingStatusTableName, String title, String author) throws SQLException {
         if (!(title.equals("") && author.equals(""))) {
-            return dbConnection.freeBookSearch(bookshelfTableName, title, author);
+            return dbConnection.freeBookSearch(bookshelfReadingStatusTableName, title, author);
         }
         return new ArrayList<>();
     }
 
-    public boolean checkIfInShelf(BookshelfTable bookshelfTableName, Book book) throws SQLException {
-        return dbConnection.searchBook(bookshelfTableName, book).next();
+    public boolean checkIfInShelf(BookshelfReadingStatusTable bookshelfReadingStatusTableName, Book book) throws SQLException {
+        return dbConnection.searchBook(bookshelfReadingStatusTableName, book).next();
     }
 
     // UPDATE
-    public boolean updateReadingStatus(BookshelfTable bookshelfTableName, Book book) throws SQLException {
-        if (checkIfInShelf(bookshelfTableName, book)) {
-            dbConnection.updateDoneReading(bookshelfTableName, book);
+    public boolean updateReadingStatus(BookshelfReadingStatusTable bookshelfReadingStatusTableName, Book book) throws SQLException {
+        if (checkIfInShelf(bookshelfReadingStatusTableName, book)) {
+            dbConnection.updateDoneReading(bookshelfReadingStatusTableName, book);
             return true;
         }
 
@@ -91,9 +91,9 @@ public class BookshelfController {
     }
 
     //DELETE
-    public boolean deleteBook(BookshelfTable bookshelfTableName, Book book) throws SQLException {
-        if (checkIfInShelf(bookshelfTableName, book)) {
-            dbConnection.deleteBook(bookshelfTableName, book);
+    public boolean deleteBook(BookshelfReadingStatusTable bookshelfReadingStatusTableName, Book book) throws SQLException {
+        if (checkIfInShelf(bookshelfReadingStatusTableName, book)) {
+            dbConnection.deleteBook(bookshelfReadingStatusTableName, book);
             return true;
         }
 

@@ -1,7 +1,7 @@
 package bookdatabase;
 
-import objects.Book;
-import util.BookshelfTable;
+import model.Book;
+import reading_status_enums.BookshelfReadingStatusTable;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
@@ -41,7 +41,7 @@ public class BooksDBConnection {
     }
 
     // Add book to a bookshelf.
-    protected void addBook(Book book, BookshelfTable bookshelf) throws SQLException {
+    protected void addBook(Book book, BookshelfReadingStatusTable bookshelf) throws SQLException {
         String insertOwnedBook = "INSERT INTO " + bookshelf.getTableName() + " (title, author, date_of_publication, publisher, genre" +
                 ", done_reading)" +
                 " VALUES(?,?,?,?,?,?)";
@@ -50,7 +50,7 @@ public class BooksDBConnection {
 
         PreparedStatement insertBook;
 
-        if (bookshelf == BookshelfTable.OWNED) {
+        if (bookshelf == BookshelfReadingStatusTable.OWNED) {
             insertBook = connection.prepareStatement(insertOwnedBook);
 
             insertBook.setString(1, book.getTitle());
@@ -74,7 +74,7 @@ public class BooksDBConnection {
     }
 
     // Selects all books from a given bookshelf.
-    protected ArrayList<Book> getBooks(BookshelfTable bookshelf) throws SQLException {
+    protected ArrayList<Book> getBooks(BookshelfReadingStatusTable bookshelf) throws SQLException {
         PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf.getTableName());
         ResultSet bookQueryResult = selectBooks.executeQuery();
         createBooksFromQuery(bookQueryResult, bookshelf);
@@ -87,8 +87,8 @@ public class BooksDBConnection {
 // INSERT
 
     // Creates a book object based on a result ser (rows queried from database).
-    private void createBooksFromQuery(ResultSet resultSet, BookshelfTable bookshelf) throws SQLException {
-        if (bookshelf == BookshelfTable.OWNED) {
+    private void createBooksFromQuery(ResultSet resultSet, BookshelfReadingStatusTable bookshelf) throws SQLException {
+        if (bookshelf == BookshelfReadingStatusTable.OWNED) {
             while (resultSet.next()) {
                 String title = resultSet.getString("title");
                 String author = resultSet.getString("author");
@@ -113,7 +113,7 @@ public class BooksDBConnection {
 // SELECT
 
     // selects a book from the DB, returns a ResultSet!
-    protected ResultSet searchBook(BookshelfTable bookshelf, Book book) throws SQLException {
+    protected ResultSet searchBook(BookshelfReadingStatusTable bookshelf, Book book) throws SQLException {
         PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf.getTableName() +
                 " WHERE title LIKE '%" + book.getTitle() + "%' AND author LIKE '%" + book.getAuthor() + "%'");
 
@@ -121,7 +121,7 @@ public class BooksDBConnection {
     }
 
     // Looks up a book and returns search results.
-    protected ArrayList<Book> freeBookSearch(BookshelfTable bookshelf, String title, String author) throws SQLException {
+    protected ArrayList<Book> freeBookSearch(BookshelfReadingStatusTable bookshelf, String title, String author) throws SQLException {
         PreparedStatement selectBooks = connection.prepareStatement("SELECT * FROM " + bookshelf.getTableName() +
                 " WHERE title LIKE '%" + title + "%' OR author LIKE '%" + author + "%'");
 
@@ -131,7 +131,7 @@ public class BooksDBConnection {
     }
 
 //UPDATE
-    protected void updateDoneReading(BookshelfTable bookshelf, Book book) throws SQLException {
+    protected void updateDoneReading(BookshelfReadingStatusTable bookshelf, Book book) throws SQLException {
         ResultSet queryResult = searchBook(bookshelf, book);
 
         while (queryResult.next()) {
@@ -147,7 +147,7 @@ public class BooksDBConnection {
     }
 
 // DELETE
-    protected void deleteBook(BookshelfTable bookshelf, Book book) throws SQLException {
+    protected void deleteBook(BookshelfReadingStatusTable bookshelf, Book book) throws SQLException {
         ResultSet queryResult = searchBook(bookshelf, book);
 
         while (queryResult.next()) {

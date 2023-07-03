@@ -1,6 +1,6 @@
-import objects.Book;
-import bookdatabase.BookshelfController;
-import util.BookshelfTable;
+import model.Book;
+import bookdatabase.BookshelfDBService;
+import reading_status_enums.BookshelfReadingStatusTable;
 
 import java.sql.SQLException;
 
@@ -9,10 +9,10 @@ public class Main {
 
 
     public static void main(String[] args) throws SQLException {
-        BookshelfTable owned = BookshelfTable.OWNED;
-        BookshelfTable wishlist = BookshelfTable.WISHLIST;
+        BookshelfReadingStatusTable owned = BookshelfReadingStatusTable.OWNED;
+        BookshelfReadingStatusTable wishlist = BookshelfReadingStatusTable.WISHLIST;
 
-        BookshelfController ikeaBookshelf = new BookshelfController();
+        BookshelfDBService ikeaBookshelf = new BookshelfDBService();
 
         // Book <title>__<f. name>_<l. name>
         Book LUTHER__N_C = new Book("Luther. Die Drohung",

@@ -1,8 +1,8 @@
 package com.endava.kenneth.bookdatabase;
 
-import bookdatabase.BookshelfController;
-import objects.Book;
-import util.BookshelfTable;
+import bookdatabase.BookshelfDBService;
+import model.Book;
+import reading_status_enums.BookshelfReadingStatusTable;
 
 import java.sql.SQLException;
 
@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BookshelfControllerTest {
-    public BookshelfControllerTest() throws SQLException {
+public class BookshelfDBServiceTest {
+    public BookshelfDBServiceTest() throws SQLException {
     }
 
     // Test Books
@@ -41,56 +41,56 @@ public class BookshelfControllerTest {
     // start state books_wishlist = {AUGENSAMMLER__S_F}
 
 
-    BookshelfController bookshelfController = new BookshelfController();
+    BookshelfDBService bookshelfDBService = new BookshelfDBService();
 
 
     @Test
     void database_connection_test_should_be_true() throws SQLException {
-        assertThat(bookshelfController.showConnectionStatus()).isTrue();
+        assertThat(bookshelfDBService.showConnectionStatus()).isTrue();
     }
 
     @Test
     void add_book_to_bookshelf_should_be_true() throws SQLException {
-        assertThat(bookshelfController.addToBookshelf(SCAR__J_K)).isTrue();
+        assertThat(bookshelfDBService.addToBookshelf(SCAR__J_K)).isTrue();
     }
 
     @Test
     void add_book_to_bookshelf_should_be_false() throws SQLException {
-        assertThat(bookshelfController.addToBookshelf(SCAR__J_K)).isFalse();
+        assertThat(bookshelfDBService.addToBookshelf(SCAR__J_K)).isFalse();
     }
 
     @Test
     void add_book_to_wishlist_should_be_true() throws SQLException {
-        assertThat(bookshelfController.addToWishlist(AUSGELOESCHT__C_M)).isTrue();
+        assertThat(bookshelfDBService.addToWishlist(AUSGELOESCHT__C_M)).isTrue();
     }
 
     @Test
     void add_book_to_wishlist_should_be_false() throws SQLException {
-        assertThat(bookshelfController.addToWishlist(AUSGELOESCHT__C_M)).isFalse();
+        assertThat(bookshelfDBService.addToWishlist(AUSGELOESCHT__C_M)).isFalse();
     }
 
    @Test
     void check_if_book_was_moved_should_be_true() throws SQLException {
-        bookshelfController.moveBookFromWishlist(AUGENSAMMLER__S_F);
-        assertThat(bookshelfController.checkIfInShelf(BookshelfTable.OWNED, AUGENSAMMLER__S_F)).isTrue();
-        assertThat(bookshelfController.checkIfInShelf(BookshelfTable.WISHLIST, AUGENSAMMLER__S_F)).isFalse();
+        bookshelfDBService.moveBookFromWishlist(AUGENSAMMLER__S_F);
+        assertThat(bookshelfDBService.checkIfInShelf(BookshelfReadingStatusTable.OWNED, AUGENSAMMLER__S_F)).isTrue();
+        assertThat(bookshelfDBService.checkIfInShelf(BookshelfReadingStatusTable.WISHLIST, AUGENSAMMLER__S_F)).isFalse();
    }
 
 
     @Test
     void books_owned_bookshelf_should_have_3_books() throws SQLException {
-        assertThat(bookshelfController.getAllBooks(BookshelfTable.OWNED).size()).isEqualTo(3);
+        assertThat(bookshelfDBService.getAllBooks(BookshelfReadingStatusTable.OWNED).size()).isEqualTo(3);
     }
 
     @Test
     void books_wishlist_bookshelf_should_have_1_book() throws SQLException {
-        assertThat(bookshelfController.getAllBooks(BookshelfTable.WISHLIST).size()).isEqualTo(1);
+        assertThat(bookshelfDBService.getAllBooks(BookshelfReadingStatusTable.WISHLIST).size()).isEqualTo(1);
     }
 
     @Test
     void should_return_results_for_title_er_author_n() throws SQLException {
         for (int i = 0; i < SEARCH_TEST_BOOK_AUTHORS.length; i++){
-            assertThat(bookshelfController.freeBookSearch(BookshelfTable.OWNED, "er", "n").get(i).getTitle()
+            assertThat(bookshelfDBService.freeBookSearch(BookshelfReadingStatusTable.OWNED, "er", "n").get(i).getTitle()
             ).isEqualTo(SEARCH_TEST_BOOK_AUTHORS[i]);
         }
     }
@@ -98,25 +98,25 @@ public class BookshelfControllerTest {
 
     @Test
     void check_if_book_is_in_bookshelf_should_be_true() throws SQLException {
-        assertThat(bookshelfController.checkIfInShelf(BookshelfTable.OWNED, LUTHER__N_C)).isTrue();
+        assertThat(bookshelfDBService.checkIfInShelf(BookshelfReadingStatusTable.OWNED, LUTHER__N_C)).isTrue();
     }
 
     @Test
     void check_if_book_is_not_in_bookshelf_should_be_false() throws SQLException {
-        assertThat(bookshelfController.checkIfInShelf(BookshelfTable.OWNED, STILLE_BESTIE__C_C)).isFalse();
+        assertThat(bookshelfDBService.checkIfInShelf(BookshelfReadingStatusTable.OWNED, STILLE_BESTIE__C_C)).isFalse();
     }
 
     @Test
     void reading_status_update_should_be_true() throws SQLException {
-        assertThat(bookshelfController.updateReadingStatus(BookshelfTable.OWNED, LUTHER__N_C)).isTrue();
+        assertThat(bookshelfDBService.updateReadingStatus(BookshelfReadingStatusTable.OWNED, LUTHER__N_C)).isTrue();
     }
 
     @Test
     void deleted_book_should_be_found() throws SQLException{
         // check if deletion was successful
-        assertThat(bookshelfController.deleteBook(BookshelfTable.OWNED, AUGENSAMMLER__S_F)).isTrue();
+        assertThat(bookshelfDBService.deleteBook(BookshelfReadingStatusTable.OWNED, AUGENSAMMLER__S_F)).isTrue();
 
         // look for deleted book in bookshelf
-        assertThat(bookshelfController.checkIfInShelf(BookshelfTable.OWNED, AUGENSAMMLER__S_F)).isFalse();
+        assertThat(bookshelfDBService.checkIfInShelf(BookshelfReadingStatusTable.OWNED, AUGENSAMMLER__S_F)).isFalse();
     }
 }
