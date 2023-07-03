@@ -1,12 +1,14 @@
- # Small Digital Bookshelf Project
+# Small Digital Bookshelf Project
 
 ### Digital Books Database App (written in Java and MySQL)
-
 * The purpose of this project was to get familiar with:
   * JDBC
   * Connecting to a databases in Java
   * JDBC connection pools
   * Writing tests with JUnit
+
+The project was made in the first year of my apprenticeship.
+
 
 ### Functionalities
 * Users can create a book based on a Book class
