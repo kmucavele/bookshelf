@@ -25,7 +25,6 @@ public class BookshelfDBService {
     public void showBookList(ArrayList<Book> bookList) {
         if (!bookList.isEmpty()) {
             for (Book book : bookList) {
-                //System.out.println(book, bookList.indexOf(book));
                 System.out.printf("Book %d:%n" + book, bookList.indexOf(book) + 1);
             }
             return;
