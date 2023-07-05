@@ -1,4 +1,4 @@
-package com.endava.kenneth.bookdatabase;
+package com.me.kenneth.bookdatabase;
 
 import bookdatabase.BookshelfDBService;
 import model.Book;
