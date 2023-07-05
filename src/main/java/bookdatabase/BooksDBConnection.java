@@ -1,5 +1,6 @@
 package bookdatabase;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import model.Book;
 import reading_status_enums.BookshelfReadingStatusTable;
 import com.zaxxer.hikari.HikariDataSource;
@@ -9,12 +10,17 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class BooksDBConnection {
-    //protected modifier maybe not needed?
     private static BooksDBConnection instance = null;
     final private ArrayList<Book> queriedBooks = new ArrayList<>();
 
     // Hikari Datasource DB connection
     final private Connection connection = createDataSource().getConnection();
+
+    // For database credentials
+    private static final Dotenv dotenv = Dotenv.load();
+    private static final String DATABASE_NAME = dotenv.get("DATABASE_NAME");
+    private static final String DATABASE_USER = dotenv.get("DATABASE_USER");
+    private static final String DATABASE_PASSWORD = dotenv.get("DATABASE_PASSWORD");
 
     // make constructor inaccessible
     private BooksDBConnection() throws SQLException {
@@ -34,9 +40,10 @@ public class BooksDBConnection {
 
     private static DataSource createDataSource(){
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/books");
-        dataSource.setUsername("root");
-        dataSource.setPassword("dataBahn28#");
+
+        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/" + DATABASE_NAME);
+        dataSource.setUsername(DATABASE_USER);
+        dataSource.setPassword(DATABASE_PASSWORD);
         return dataSource;
     }
 
