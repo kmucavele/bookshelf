@@ -7,7 +7,7 @@ The idea behind the bookshelf app was to have two main bookshelves.
 One where you store already owned books and another with books that you want to read in the future but not own yet
 (wishlist).
 
-The project was made in the first year of my apprenticeship and servers for educational purposes.
+The project was made in the first year of my apprenticeship and servers for demonstrative purposes.
 
 __A second project build with the Spring Boot Framework is based on this project__
 
