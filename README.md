@@ -7,6 +7,8 @@ The idea behind the bookshelf app was to have two main bookshelves.
 One where you store already owned books and another with books that you want to read in the future but not own yet
 (wishlist).
 
+The project was made in the first year of my apprenticeship and servers for educational purposes.
+
 
 ### Functionalities
 * Users can:
@@ -24,8 +26,6 @@ One where you store already owned books and another with books that you want to 
   * Connecting to a databases in Java
   * Database connection pools
   * Writing tests with JUnit
-
-The project was made in the first year of my apprenticeship.
 
 ## Usage
 
