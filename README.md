@@ -9,6 +9,7 @@ One where you store already owned books and another with books that you want to 
 
 The project was made in the first year of my apprenticeship and servers for educational purposes.
 
+__A second project build with the Spring Boot Framework is based on this project__
 
 ### Functionalities
 * Users can:
