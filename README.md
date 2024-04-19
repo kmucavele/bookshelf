@@ -9,7 +9,7 @@ One where you store already owned books and another with books that you want to 
 
 The project was made in the first year of my apprenticeship and serves to showcase work samples.
 
-__A second project build with the Spring Boot Framework is based on this project__
+__A second project, build with the Spring Boot Framework is based on this project, which exposes the bookshelf functionalities to an REST API__
 
 ### Functionalities
 * Users can:
